@@ -1,0 +1,9 @@
+# Only the parts of the Supabase CLI config this project relies on.
+project_id = "split-tab"
+
+[functions.notify]
+verify_jwt = true
+
+[functions.month-end]
+# Called by the database's own cron job with a shared secret instead of a user login.
+verify_jwt = false
