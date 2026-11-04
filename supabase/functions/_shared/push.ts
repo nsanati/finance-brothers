@@ -1,11 +1,16 @@
 import webpush from "npm:web-push@3.6.7";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
 
-webpush.setVapidDetails(
-  Deno.env.get("VAPID_SUBJECT") ?? "mailto:admin@example.com",
-  Deno.env.get("VAPID_PUBLIC_KEY")!,
-  Deno.env.get("VAPID_PRIVATE_KEY")!,
-);
+let vapidReady = false;
+function setupVapid() {
+  if (vapidReady) return;
+  webpush.setVapidDetails(
+    Deno.env.get("VAPID_SUBJECT") ?? "mailto:admin@example.com",
+    Deno.env.get("VAPID_PUBLIC_KEY")!,
+    Deno.env.get("VAPID_PRIVATE_KEY")!,
+  );
+  vapidReady = true;
+}
 
 export function adminClient(): SupabaseClient {
   return createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -17,6 +22,7 @@ export type PushMessage = { title: string; body: string; url?: string; tag?: str
 
 /** Send a notification to every device the given users have turned notifications on for. */
 export async function pushToUsers(db: SupabaseClient, userIds: string[], msg: PushMessage) {
+  setupVapid();
   const ids = [...new Set(userIds)];
   if (!ids.length) return 0;
   const { data: subs, error } = await db
