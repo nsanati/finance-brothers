@@ -2,7 +2,8 @@
 project_id = "split-tab"
 
 [functions.notify]
-verify_jwt = true
+# The function checks the caller's login itself, which works with both old and new Supabase key types.
+verify_jwt = false
 
 [functions.month-end]
 # Called by the database's own cron job with a shared secret instead of a user login.

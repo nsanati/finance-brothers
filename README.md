@@ -44,6 +44,10 @@ It prints a **Public Key** and a **Private Key**. Keep both.
 
 ### 4. Deploy the notification functions
 
+**No-terminal option:** in Supabase go to **Edge Functions → Deploy a new function → Via Editor**, paste [`supabase/dashboard/notify.ts`](supabase/dashboard/notify.ts), name it `notify`, deploy, then in its **Settings** turn off **Verify JWT with legacy secret**. Repeat with [`supabase/dashboard/month-end.ts`](supabase/dashboard/month-end.ts) named `month-end`. Add the four secrets (below) under **Edge Functions → Secrets**.
+
+**Terminal option:**
+
 Install the [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started), then from this repo's folder run the commands below. Replace the capitalized parts. `YOUR-PROJECT-REF` is the code in your Project URL (`https://YOUR-PROJECT-REF.supabase.co`). `PICK-A-LONG-RANDOM-SECRET` can be any long random string; you'll reuse it in step 5.
 
 ```bash
@@ -56,7 +60,7 @@ supabase secrets set \
   VAPID_SUBJECT="mailto:you@example.com" \
   CRON_SECRET="PICK-A-LONG-RANDOM-SECRET"
 
-supabase functions deploy notify
+supabase functions deploy notify --no-verify-jwt
 supabase functions deploy month-end --no-verify-jwt
 ```
 
